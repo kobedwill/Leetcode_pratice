@@ -1,0 +1,44 @@
+better and cleaner solution than what i did in Interviewbit
+///////////////////////////////////////////////////////////////////////////
+
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode() : val(0), next(nullptr) {}
+ *     ListNode(int x) : val(x), next(nullptr) {}
+ *     ListNode(int x, ListNode *next) : val(x), next(next) {}
+ * };
+ */
+class Solution {
+public:
+    ListNode* reverseBetween(ListNode* head, int left, int right) {
+        if(head == NULL) return head;
+        ListNode* curr = head;
+        ListNode* prev = NULL;                              
+        while(left > 1){                             // first iterative to the node, which need to be reversed
+            prev = curr;
+            curr = curr->next;
+            left--;
+            right--;
+        }
+        ListNode* first = prev;                     // keep the location of first reversed node and the node one step behind it
+        ListNode* second = curr;
+        ListNode* nextone = NULL;
+
+        while(right >0){                            // do reverse 
+            nextone = curr->next;
+            curr->next = prev;
+            prev = curr;
+            curr = nextone;
+            right--;
+        }
+        if(first != NULL) first->next = prev;       // after reverse, the prev node is the new first node in reversed node --> need to be reconnected
+        else head = prev;                           // if there's no node one step behind reversed node--> reverse start from head
+
+        second->next = curr;                        // curr is right now at one step after reversed node --> reconnect it
+
+        return head;                    
+    }
+};
