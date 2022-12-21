@@ -1,0 +1,50 @@
+We want to split a group of n people (labeled from 1 to n) into two groups of any size. 
+Each person may dislike some other people, and they should not go into the same group.
+
+Given the integer n and the array dislikes where dislikes[i] = [ai, bi] indicates that the person labeled ai does not like the person labeled bi, 
+return true if it is possible to split everyone into two groups in this way.
+
+ 
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+class Solution {
+public:
+    bool possibleBipartition(int n, vector<vector<int>>& dislikes) {
+        unordered_map<int, vector<int>> record;
+        vector<int> color(n+1,-1);  // record -1 to initialize all node as unvisited with color( need to split into two groups)
+        
+        // first record all dislike connections into map
+        
+        for(auto d:dislikes){
+            record[d[0]].push_back(d[1]);   
+            record[d[1]].push_back(d[0]);
+        }
+        
+        // do BFS, if there's same label color connected to each other -> false, no way to split into two gropus 
+        
+        for(int i = 1; i<=n; i++){
+            if(color[i] == -1){
+                if(!BFS(i, record, color)) return false;  
+            }
+        }
+        return true;
+    }
+    bool BFS(int n, unordered_map<int, vector<int>> &record, vector<int> &color){
+        color[n] = 1;         // first color label as 1
+        queue<int> q;
+        q.push(n);
+        while(!q.empty()){
+            int i = q.front();
+            q.pop();
+            for(auto trav: record[i]){
+                if(color[trav] == -1){
+                    color[trav] = 1-color[i];
+                    q.push(trav);
+                }
+                else if(color[trav] == color[i])
+                    return false;
+            }
+        }
+        return true;
+    }
+};
