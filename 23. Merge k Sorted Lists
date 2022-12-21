@@ -1,0 +1,44 @@
+You are given an array of k linked-lists lists, each linked-list is sorted in ascending order.
+
+Merge all the linked-lists into one sorted linked-list and return it.
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode() : val(0), next(nullptr) {}
+ *     ListNode(int x) : val(x), next(nullptr) {}
+ *     ListNode(int x, ListNode *next) : val(x), next(next) {}
+ * };
+ */
+class Solution {
+public:
+    struct compare{             // self-defined sorting-method --> using struct overload
+        bool operator()(const ListNode* l, const ListNode* r) { 
+        return l->val > r->val;
+    }
+    };    
+        
+    ListNode* mergeKLists(vector<ListNode*>& lists) {
+        priority_queue<ListNode*, vector<ListNode*>, compare> pq;
+        for(auto list: lists){                      // push list in p_queue
+            if(list)
+                pq.push(list);
+        }
+        if(pq.empty()) return NULL;
+        ListNode* ans = pq.top();                   // record from the start
+        pq.pop();
+        if(ans->next) pq.push(ans->next);           // push the next node and re-sort the sequence in p_queue 
+        ListNode* curr = ans;                       // copy a curr node to traverse the p_queue
+        while(!pq.empty()){
+            curr->next = pq.top();                  
+            pq.pop();
+            curr = curr->next;
+            if(curr->next) pq.push(curr->next);
+        }
+        return ans;
+    }
+
+};
