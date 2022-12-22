@@ -1,0 +1,44 @@
+There is an undirected connected tree with n nodes labeled from 0 to n - 1 and n - 1 edges.
+
+You are given the integer n and the array edges where edges[i] = [ai, bi] indicates that there is an edge between nodes ai and bi in the tree.
+
+Return an array answer of length n where answer[i] is the sum of the distances between the ith node in the tree and all other nodes.
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// https://leetcode.com/problems/sum-of-distances-in-tree/solutions/1308366/c-solution-using-dfs-with-explanation-o-n-time-complexity/
+class Solution {
+public:
+    vector<vector<int>> v;
+    vector<int> record, count;
+    void dfs(int i, int p = -1){
+        for(auto u: v[i]){
+            if(u != p){
+                dfs(u, i);
+                count[i] += count[u];
+                record[i] += count[u] + record[u];
+            }
+        }
+        count[i]+=1;
+    }
+
+    void dfs2(int i, int n, int p = -1) {
+        for(auto u : v[i]) {
+            if(u == p) continue;
+            record[u] = record[i] - count[u] + n - count[u];
+            dfs2(u, n, i);
+        }
+    }
+    vector<int> sumOfDistancesInTree(int n, vector<vector<int>>& edges) {
+        v.resize(n);
+        for(auto edge : edges){
+            int a = edge[0];
+            int b = edge[1];
+            v[a].push_back(b);
+            v[b].push_back(a);
+        }
+        record.resize(n);
+        count.resize(n);
+        dfs(0);
+        dfs2(0,n);
+        return record;
+    }
+};
