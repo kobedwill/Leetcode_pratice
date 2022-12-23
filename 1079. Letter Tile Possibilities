@@ -1,0 +1,28 @@
+You have n  tiles, where each tile has one letter tiles[i] printed on it.
+
+Return the number of possible non-empty sequences of letters you can make using the letters printed on those tiles.
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+ 
+class Solution {
+public:
+    int numTilePossibilities(string tiles) {
+        int count = 0, n = tiles.size();
+        sort(tiles.begin(), tiles.end());
+        vector<bool> visited(n, false);
+        helper(tiles, count, visited);
+        return count;
+    }
+    void helper(string tiles, int &count, vector<bool> &visited){
+        for(int i = 0; i<tiles.size(); i++){
+            // if visited[i-1] has already been visited --> no need to pass tiles[i]
+            // OTOH: visited[i-1] has not been visited --> need to pass tiles[i], otherwise it would repeat twice
+            if(visited[i] == true || i > 0 && tiles[i] == tiles[i-1] && visited[i-1] == false) continue; 
+            visited[i] = true;
+            count++;
+            helper(tiles, count, visited);
+            visited[i] = false;
+        }
+
+    }
+};
