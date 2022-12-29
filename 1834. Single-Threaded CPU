@@ -1,0 +1,49 @@
+You are given n tasks labeled from 0 to n - 1 represented by a 2D integer array tasks, 
+where tasks[i] = [enqueueTimei, processingTimei] means that the ith task will be available to process at enqueueTimei 
+and will take processingTimei to finish processing.
+
+You have a single-threaded CPU that can process at most one task at a time and will act in the following way:
+
+    If the CPU is idle and there are no available tasks to process, the CPU remains idle.
+    If the CPU is idle and there are available tasks, the CPU will choose the one with the shortest processing time. 
+    If multiple tasks have the same shortest processing time, it will choose the task with the smallest index.
+    Once a task is started, the CPU will process the entire task without stopping.
+    The CPU can finish a task then start a new one instantly.
+
+Return the order in which the CPU will process the tasks.
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+class Solution {
+public:
+    vector<int> getOrder(vector<vector<int>>& tasks) {
+        int n = tasks.size();
+        for(int i = 0; i<n; i++)
+            tasks[i].push_back(i);        // mark index of tasks
+        sort(tasks.begin(), tasks.end()); // sort task from smallest enqueuetime
+
+        priority_queue<pair<int,int>, vector<pair<int,int>>, greater<pair<int,int>>> pq;   
+        vector<int> ans;
+        long long currtime = tasks[0][0];   // currtime starts from teh sma;;est enqueuetime
+        int i = 0;
+        while(i < n || !pq.empty()){
+        // if current time greater than enqueuetime of task --> 
+        // all tasks must add into wokring flow with order of it "processing time" (CPU will process tasks, starts from the smallest processing time -->
+        // priority queue help us to sort)
+            while(i < n && currtime >= tasks[i][0]){    
+                pq.push({tasks[i][1], tasks[i][2]});
+                i++;
+            }
+            if(pq.empty()){     // if pq is empty --> At currtime, CPU is idle --> find the next task, which has the smallest enqueuetime
+                currtime = tasks[i][0];
+            }
+            else{               // if pq has elements, we need to order it one by one and need to add the processing time of it to curr time
+                pair<int, int> curr = pq.top();
+                pq.pop();
+                ans.push_back(curr.second);
+                currtime+=curr.first;
+            }
+        }
+        return ans;
+    }
+};
