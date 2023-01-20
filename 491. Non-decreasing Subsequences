@@ -14,17 +14,17 @@ public:
     void helper(vector<int>& nums, vector<vector<int>>& ans, vector<int> & record, map<vector<int>,int>& mp, int start){
         if(record.size() > 1 && mp.find(record) == mp.end()){
             ans.push_back(record);
-            mp[record] = 1;
+            mp[record] = 1; // set map as a recorder to avoid repeat arrays
         }
         if(start == nums.size()) return;
         for(int j = start; j<nums.size(); j++){
-            if(record.size() == 0){
+            if(record.size() == 0){             // if record is empty --> nums[j] must be added in
                 record.push_back(nums[j]);
                 helper(nums, ans, record, mp, j+1);
                 record.pop_back();
             }
             else{
-                if(nums[j] >= record[record.size()-1]){
+                if(nums[j] >= record[record.size()-1]){ // if there's already elements in array --> need to check if nums[j] is not smaller than array's last element.
                     record.push_back(nums[j]);
                     helper(nums, ans, record, mp, j+1);
                     record.pop_back();    
