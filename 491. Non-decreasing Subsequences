@@ -1,0 +1,35 @@
+Given an integer array nums, return all the different possible non-decreasing subsequences of the given array with at least two elements. 
+You may return the answer in any order.
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+class Solution {
+public:
+    vector<vector<int>> findSubsequences(vector<int>& nums) {
+        vector<vector<int>> ans;
+        vector<int> record;
+        map<vector<int>,int> mp;
+        helper(nums, ans, record, mp, 0);
+        return ans;
+    }
+    void helper(vector<int>& nums, vector<vector<int>>& ans, vector<int> & record, map<vector<int>,int>& mp, int start){
+        if(record.size() > 1 && mp.find(record) == mp.end()){
+            ans.push_back(record);
+            mp[record] = 1;
+        }
+        if(start == nums.size()) return;
+        for(int j = start; j<nums.size(); j++){
+            if(record.size() == 0){
+                record.push_back(nums[j]);
+                helper(nums, ans, record, mp, j+1);
+                record.pop_back();
+            }
+            else{
+                if(nums[j] >= record[record.size()-1]){
+                    record.push_back(nums[j]);
+                    helper(nums, ans, record, mp, j+1);
+                    record.pop_back();    
+                }
+            }
+        }
+    }
+};
