@@ -1,0 +1,44 @@
+Given an m x n binary matrix mat, return the distance of the nearest 0 for each cell.
+
+The distance between two adjacent cells is 1.
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+class Solution {
+public:
+    vector<vector<int>> updateMatrix(vector<vector<int>>& mat) {
+        int n = mat.size(), m = mat[0].size();
+        pair<int, int> direction[4] = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}};
+        if(n == 0) return mat;
+        vector<vector<int>> dist(n, vector<int>(m, INT_MAX));
+        queue<pair<int,int>> q;
+        // if mat[i][j] = 0, then the dist is 0 and record the 0's location
+        for(int i = 0; i<n; i++){
+            for(int j = 0; j<m; j++){
+                if(mat[i][j] == 0){
+                    dist[i][j] = 0;
+                    q.push({i, j});
+                }
+            }
+        }
+        while(!q.empty()){
+            int qsize = q.size();
+            while(qsize--){
+                pair<int, int> curr = q.front();
+                q.pop();
+                for(auto dir: direction){
+                    int x = curr.first + dir.first;
+                    int y = curr.second + dir.second;
+                    if(x >= 0 && y >= 0 && x < n && y < m){
+                        if(dist[x][y] > dist[curr.first][curr.second] + 1){
+                            dist[x][y] = dist[curr.first][curr.second] + 1;
+                            q.push({x,y});
+                    }
+                    }
+                    
+                }
+            }
+        }
+        return dist;
+    }
+};
