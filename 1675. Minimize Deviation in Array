@@ -1,0 +1,43 @@
+You are given an array nums of n positive integers.
+
+You can perform two types of operations on any element of the array any number of times:
+
+    If the element is even, divide it by 2.
+        For example, if the array is [1,2,3,4], then you can do this operation on the last element, and the array will be [1,2,3,2].
+    If the element is odd, multiply it by 2.
+        For example, if the array is [1,2,3,4], then you can do this operation on the first element, and the array will be [2,2,3,4].
+
+The deviation of the array is the maximum difference between any two elements in the array.
+
+Return the minimum deviation the array can have after performing some number of operations.
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+class Solution {
+public:
+    int minimumDeviation(vector<int>& nums) {
+        /* idea : first double all odd numbers, than all numbers in array are even(which can only be divide) 
+        2. than we can use heap to find difference between max and min
+        3. finding difference until the max value is odd, which can only be bigger, not smaller --> the mindiff will be found 
+        */
+        priority_queue<int> q;
+        int minval = INT_MAX;
+        for(auto num : nums){
+            if(num%2 == 1)
+                num*=2;
+            q.push(num);
+            // record min value
+            minval = min(minval, num);
+        }
+        int mindiff = INT_MAX;
+        while(!q.empty()){
+            int maxval = q.top();
+            q.pop();
+            mindiff = min(mindiff, maxval-minval);
+            if(maxval%2 == 1) break;  // highest number is odd --> no need to perform(the difference would only be bigger)
+            maxval/=2;
+            minval = min(minval, maxval);
+            q.push(maxval);
+        }
+        return mindiff;
+    }
+};
